@@ -1,17 +1,19 @@
-import { Config } from './config.interface';
+import { registerAs } from '@nestjs/config';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
-const config: Config = {
-  typeorm: {
-    type: 'postgres',
-    host: process.env.DB_HOST,
-    port: +process.env.DB_PORT,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+const CONNECTION_TYPE = 'postgres';
+
+export default registerAs(
+  'typeorm',
+  (): TypeOrmModuleOptions => ({
+    type: CONNECTION_TYPE,
+    host: process.env.DB_HOST || 'default_value',
+    port: +process.env.DB_PORT || 3000,
+    username: process.env.DB_USERNAME || 'default_value',
+    password: process.env.DB_PASSWORD || 'default_value',
+    database: process.env.DB_NAME || 'default_value',
     synchronize: process.env.NODE_ENV !== 'prod',
     logging: true,
     entities: [],
-  },
-};
-
-export default (): Config => config;
+  }),
+);
